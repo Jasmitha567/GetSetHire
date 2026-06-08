@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Track Progress - {{ analysis.role }} @ {{ analysis.company }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: #f5f7fa;
+            color: #1e293b;
+            padding: 50px 0;
+        }
+        
+        .skill-section {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .skill-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .progress-bar-custom {
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        
+        .progress-fill-custom {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .youtube-card {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 15px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .youtube-card:hover {
+            background: rgba(102,126,234,0.1);
+            transform: translateX(5px);
+        }
+        
+        .youtube-thumb {
+            width: 120px;
+            height: 68px;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .youtube-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .youtube-info {
+            flex: 1;
+            cursor: pointer;
+        }
+        
+        .youtube-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #1e293b;
+        }
+        
+        .youtube-meta {
+            font-size: 12px;
+            color: #64748b;
+        }
+        
+        .task-checkbox {
+            margin-right: 12px;
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+        
+        .task-completed {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+        }
+        
+        .btn-outline-secondary {
+            border-color: #cbd5e1;
+            color: #475569;
+        }
+        
+        .ai-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-left: 10px;
+            color: white;
+        }
+        
+        .readiness-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            color: white;
+            text-align: center;
+        }
+        
+        .readiness-score {
+            font-size: 3rem;
+            font-weight: 800;
+        }
+        
+        .readiness-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .improvement-badge {
+            background: rgba(255,255,255,0.2);
+            border-radius: 50px;
+            padding: 5px 15px;
+            font-size: 0.85rem;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        
+        .video-checkbox {
+            margin-right: 15px;
+            transform: scale(1.3);
+            cursor: pointer;
+        }
+        
+        .video-watched {
+            opacity: 0.7;
+            background: rgba(16,185,129,0.1);
+            border-color: #10b981;
+        }
+        
+        .video-watched .youtube-title {
+            text-decoration: line-through;
+        }
+        
+        .tasks-container {
+            margin-top: 15px;
+        }
+        
+        .task-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .task-item:last-child {
+            border-bottom: none;
+        }
+        
+        .open-video-btn {
+            background: #ff0000;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .open-video-btn:hover {
+            background: #cc0000;
+            transform: scale(1.02);
+        }
+        
+        .debug-info {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 12px;
+            color: #92400e;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="mb-0">Your Learning Journey</h2>
+                        <p class="text-muted">{{ analysis.role }} @ {{ analysis.company }}</p>
+                    </div>
+                    <a href="/dashboard" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                    </a>
+                </div>
+                
+                <!-- Readiness Score Card -->
+                <div class="readiness-card">
+                    <div class="readiness-label">Your Current Readiness Score</div>
+                    <div class="readiness-score" id="readinessScore">{{ analysis.readiness_score }}%</div>
+                    <div class="improvement-badge" id="improvementBadge">
+                        <i class="fas fa-chart-line me-1"></i>
+                        Target: 100%
+                    </div>
+                </div>
+                
+                <!-- Overall Progress -->
+                <div class="skill-section">
+                    <h5>Overall Learning Progress</h5>
+                    <div class="progress-bar-custom">
+                        <div class="progress-fill-custom" id="overallProgress" style="width: 0%"></div>
+                    </div>
+                    <div class="text-end" id="overallPercent">0% Complete</div>
+                </div>
+                
+                <!-- Debug Info (remove after fixing) -->
+                <div class="debug-info" id="debugInfo">
+                    <strong>Debug Info:</strong><br>
+                    <div id="debugContent"></div>
+                </div>
+                
+                <!-- Skills Sections -->
+                {% for skill in analysis.lacking_skills %}
+                {% set skill_resources = analysis.roadmap.learning_resources.get(skill, {}) %}
+                {% set youtube_url = skill_resources.get('youtube_url', '') %}
+                {% set video_id = skill_resources.get('youtube_video_id', '') %}
+                
+                <!-- Debug output for this skill -->
+                <script>
+                    console.log("Skill: {{ skill }}");
+                    console.log("  YouTube URL: {{ youtube_url }}");
+                    console.log("  Video ID: {{ video_id }}");
+                </script>
+                
+                <div class="skill-section" data-skill="{{ skill }}">
+                    <div class="skill-title">
+                        <i class="fas fa-code me-2"></i>{{ skill|title }}
+                        <span class="ai-badge"><i class="fas fa-robot me-1"></i>AI Generated</span>
+                    </div>
+                    
+                    <div class="progress-bar-custom">
+                        <div class="progress-fill-custom" id="progress-{{ skill|replace(' ', '_') }}" style="width: 0%"></div>
+                    </div>
+                    
+                    <!-- YouTube Video Card with Checkbox -->
+                    <h6 class="mt-3 mb-2"><i class="fab fa-youtube me-2" style="color: #ff0000;"></i>Recommended Tutorial</h6>
+                    <div class="youtube-card" id="youtube-card-{{ skill|replace(' ', '_') }}" data-skill="{{ skill }}">
+                        <div class="form-check">
+                            <input class="form-check-input video-checkbox" type="checkbox" 
+                                   id="videoCheckbox-{{ skill|replace(' ', '_') }}"
+                                   onchange="toggleVideoWatched('{{ skill }}')">
+                        </div>
+                        <div class="youtube-thumb" onclick="openYouTubeVideo('{{ skill }}', '{{ youtube_url }}')">
+                            {% if video_id and video_id != '' %}
+                                <img src="https://img.youtube.com/vi/{{ video_id }}/mqdefault.jpg" alt="{{ skill }} tutorial">
+                            {% else %}
+                                <i class="fab fa-youtube" style="color: #ff0000; font-size: 32px;"></i>
+                            {% endif %}
+                        </div>
+                        <div class="youtube-info" onclick="openYouTubeVideo('{{ skill }}', '{{ youtube_url }}')">
+                            <div class="youtube-title">{{ skill|title }} Complete Tutorial for Beginners</div>
+                            <div class="youtube-meta">
+                                {% if youtube_url and 'results?search_query=' in youtube_url %}
+                                    🔍 Search YouTube for best tutorial
+                                {% else %}
+                                    📺 Click to watch on YouTube • Duration: ~1 hour
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div>
+                            <button class="open-video-btn" onclick="openYouTubeVideo('{{ skill }}', '{{ youtube_url }}')">
+                                <i class="fab fa-youtube me-1"></i> 
+                                {% if youtube_url and 'results?search_query=' in youtube_url %}
+                                    Search
+                                {% else %}
+                                    Watch
+                                {% endif %}
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Learning Tasks -->
+                    <h6 class="mt-3 mb-2"><i class="fas fa-tasks me-2"></i>Learning Tasks</h6>
+                    <div class="tasks-container" id="tasks-{{ skill|replace(' ', '_') }}">
+                        {% set ns = namespace(found=false) %}
+                        {% for task in tasks %}
+                            {% if task.skill == skill %}
+                                {% set ns.found = true %}
+                                <div class="task-item">
+                                    <div class="form-check">
+                                        <input class="form-check-input task-checkbox" type="checkbox" 
+                                               id="task{{ task.id }}" data-task-id="{{ task.id }}"
+                                               {% if task.completed %}checked{% endif %}
+                                               onchange="toggleTask(this, {{ task.id }}, '{{ skill }}')">
+                                        <label class="form-check-label {% if task.completed %}task-completed{% endif %}" for="task{{ task.id }}">
+                                            {{ task.task }}
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        {% if not ns.found %}
+                            <p class="text-muted">No tasks available for this skill yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+                
+                <div class="text-center mt-4">
+                    <a href="/roadmap" class="btn btn-primary">
+                        <i class="fas fa-road me-2"></i>View Full Roadmap
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Store completion status
+        let videoCompleted = JSON.parse(localStorage.getItem('videoCompleted') || '{}');
+        let originalReadinessScore = {{ analysis.readiness_score }};
+        let totalSkills = {{ analysis.lacking_skills|length }};
+        
+        // Function to open YouTube video or search
+        function openYouTubeVideo(skill, url) {
+            console.log("Opening YouTube for skill:", skill);
+            console.log("URL:", url);
+            
+            let finalUrl = url;
+            
+            // If no URL or empty, create a search URL
+            if (!finalUrl || finalUrl === '') {
+                finalUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(skill)}+tutorial+for+beginners`;
+                console.log("No URL provided, using search:", finalUrl);
+            }
+            
+            // Open the URL
+            window.open(finalUrl, '_blank');
+            
+            // Auto-mark as watched after 5 seconds (user clicked the video)
+            setTimeout(() => {
+                const checkbox = document.getElementById(`videoCheckbox-${skill.replace(/ /g, '_')}`);
+                if (checkbox && !checkbox.checked) {
+                    // Uncomment the line below to auto-check when user clicks video
+                    // checkbox.checked = true;
+                    // toggleVideoWatched(skill);
+                }
+            }, 5000);
+        }
+        
+        function toggleVideoWatched(skill) {
+            const checkbox = document.getElementById(`videoCheckbox-${skill.replace(/ /g, '_')}`);
+            const isChecked = checkbox.checked;
+            
+            videoCompleted[skill] = isChecked;
+            localStorage.setItem('videoCompleted', JSON.stringify(videoCompleted));
+            
+            // Update UI
+            const card = document.getElementById(`youtube-card-${skill.replace(/ /g, '_')}`);
+            if (isChecked) {
+                card.classList.add('video-watched');
+            } else {
+                card.classList.remove('video-watched');
+            }
+            
+            updateSkillProgress(skill);
+            updateOverallProgress();
+            updateReadinessScore();
+        }
+        
+        function updateSkillProgress(skill) {
+            // Get task completion
+            const taskContainer = document.getElementById(`tasks-${skill.replace(/ /g, '_')}`);
+            let taskPercent = 0;
+            let totalTasks = 0;
+            let completedTasks = 0;
+            
+            if (taskContainer) {
+                const checkboxes = taskContainer.querySelectorAll('.task-checkbox');
+                totalTasks = checkboxes.length;
+                completedTasks = Array.from(checkboxes).filter(cb => cb.checked).length;
+                taskPercent = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+            }
+            
+            // Get video completion (0 or 100)
+            const videoPercent = videoCompleted[skill] ? 100 : 0;
+            
+            // Combined: 50% tasks, 50% video
+            const overall = (taskPercent * 0.5) + (videoPercent * 0.5);
+            
+            // Update progress bar
+            const progressBar = document.getElementById(`progress-${skill.replace(/ /g, '_')}`);
+            if (progressBar) {
+                progressBar.style.width = `${overall}%`;
+            }
+            
+            return { overall, totalTasks, completedTasks, videoCompleted: videoPercent === 100 };
+        }
+        
+        function updateOverallProgress() {
+            const skills = document.querySelectorAll('.skill-section');
+            let totalProgress = 0;
+            let skillCount = 0;
+            
+            skills.forEach(skillSection => {
+                const skill = skillSection.dataset.skill;
+                if (skill) {
+                    const { overall } = updateSkillProgress(skill);
+                    totalProgress += overall;
+                    skillCount++;
+                }
+            });
+            
+            const overall = skillCount > 0 ? totalProgress / skillCount : 0;
+            const overallProgressBar = document.getElementById('overallProgress');
+            const overallPercentSpan = document.getElementById('overallPercent');
+            if (overallProgressBar) {
+                overallProgressBar.style.width = `${overall}%`;
+            }
+            if (overallPercentSpan) {
+                overallPercentSpan.innerText = `${Math.round(overall)}% Complete`;
+            }
+        }
+        
+        function updateReadinessScore() {
+            const skills = document.querySelectorAll('.skill-section');
+            let completedSkills = 0;
+            
+            skills.forEach(skillSection => {
+                const skill = skillSection.dataset.skill;
+                if (skill) {
+                    const taskContainer = document.getElementById(`tasks-${skill.replace(/ /g, '_')}`);
+                    let allTasksCompleted = true;
+                    let allVideosCompleted = videoCompleted[skill] || false;
+                    
+                    if (taskContainer) {
+                        const checkboxes = taskContainer.querySelectorAll('.task-checkbox');
+                        const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+                        allTasksCompleted = allChecked;
+                    }
+                    
+                    if (allTasksCompleted && allVideosCompleted) {
+                        completedSkills++;
+                    }
+                }
+            });
+            
+            // Calculate new readiness score based on completed skills
+            const newScore = totalSkills > 0 ? Math.round((completedSkills / totalSkills) * 100) : 0;
+            const scoreElement = document.getElementById('readinessScore');
+            if (scoreElement) {
+                scoreElement.innerText = newScore + '%';
+                
+                // Add animation
+                scoreElement.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    scoreElement.style.transform = 'scale(1)';
+                }, 200);
+            }
+            
+            // Update improvement badge
+            const improvementBadge = document.getElementById('improvementBadge');
+            if (improvementBadge && newScore > originalReadinessScore) {
+                improvementBadge.innerHTML = `<i class="fas fa-arrow-up me-1"></i>Improved by ${newScore - originalReadinessScore}%!`;
+                improvementBadge.style.background = 'rgba(16,185,129,0.3)';
+            }
+        }
+        
+        async function toggleTask(checkbox, taskId, skill) {
+    const completed = checkbox.checked ? 1 : 0;
+    const label = checkbox.nextElementSibling;
+    
+    if (completed) {
+        label.classList.add('task-completed');
+    } else {
+        label.classList.remove('task-completed');
+    }
+    
+    // Update local progress
+    updateSkillProgress(skill);
+    updateOverallProgress();
+    updateReadinessScore();
+    
+    try {
+        const response = await fetch('/update_task', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({task_id: taskId, completed: completed})
+        });
+        const data = await response.json();
+        if (!data.success) {
+            throw new Error('Server update failed');
+        }
+        
+        // Also update the dashboard score in session storage
+        const newScore = document.getElementById('readinessScore').innerText.replace('%', '');
+        sessionStorage.setItem('dashboardScore', newScore);
+        
+    } catch (error) {
+        console.error('Error saving to server:', error);
+        checkbox.checked = !completed;
+        if (completed) {
+            label.classList.remove('task-completed');
+        } else {
+            label.classList.add('task-completed');
+        }
+        updateSkillProgress(skill);
+        updateOverallProgress();
+        updateReadinessScore();
+    }
+}
+        
+        // Initialize
+        function initialize() {
+            // Load video completed states
+            for (let skill in videoCompleted) {
+                const checkbox = document.getElementById(`videoCheckbox-${skill.replace(/ /g, '_')}`);
+                if (checkbox && videoCompleted[skill]) {
+                    checkbox.checked = true;
+                    const card = document.getElementById(`youtube-card-${skill.replace(/ /g, '_')}`);
+                    if (card) card.classList.add('video-watched');
+                }
+            }
+            
+            // Load task states
+            document.querySelectorAll('.task-checkbox').forEach(checkbox => {
+                if (checkbox.checked) {
+                    checkbox.nextElementSibling.classList.add('task-completed');
+                }
+            });
+            
+            updateOverallProgress();
+            updateReadinessScore();
+            console.log('Tracking page initialized');
+        }
+        
+        initialize();
+    </script>
+</body>
+</html>

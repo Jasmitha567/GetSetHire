@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - CareerReady AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .signup-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .signup-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 550px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.5s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .signup-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .signup-header i {
+            font-size: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        
+        .form-control {
+            border-radius: 10px;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        .form-control.error {
+            border-color: #ef4444;
+        }
+        
+        .form-control.success {
+            border-color: #10b981;
+        }
+        
+        .btn-signup {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-weight: 600;
+            border: none;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-signup:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-signup:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .login-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .alert {
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .password-requirements {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 8px;
+            font-size: 12px;
+        }
+        
+        .password-requirements p {
+            margin: 0 0 8px 0;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .password-requirements ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .password-requirements li {
+            margin: 5px 0;
+            list-style: none;
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        .password-requirements li:before {
+            content: "✗";
+            position: absolute;
+            left: 0;
+            color: #ef4444;
+        }
+        
+        .password-requirements li.valid:before {
+            content: "✓";
+            color: #10b981;
+        }
+        
+        .password-requirements li.valid {
+            color: #10b981;
+        }
+        
+        .password-requirements li.invalid {
+            color: #ef4444;
+        }
+        
+        .error-message {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        .success-message {
+            color: #10b981;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+        
+        .strength-bar {
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        
+        .strength-fill {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 2px;
+        }
+        
+        .strength-fill.weak {
+            background: #ef4444;
+            width: 25%;
+        }
+        
+        .strength-fill.medium {
+            background: #f59e0b;
+            width: 50%;
+        }
+        
+        .strength-fill.strong {
+            background: #10b981;
+            width: 75%;
+        }
+        
+        .strength-fill.very-strong {
+            background: #059669;
+            width: 100%;
+        }
+        
+        .strength-text {
+            font-size: 11px;
+            margin-top: 5px;
+            text-align: right;
+        }
+        
+        .row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .row .form-group {
+            flex: 1;
+        }
+        
+        @media (max-width: 576px) {
+            .row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <div class="signup-card">
+            <div class="signup-header">
+                <i class="fas fa-user-plus"></i>
+                <h3>Create Account</h3>
+                <p class="text-muted">Start your career journey today</p>
+            </div>
+            
+            {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+            {% endif %}
+            
+            <form method="POST" id="signupForm">
+                <div class="form-group">
+                    <label><i class="fas fa-user me-2"></i>Full Name</label>
+                    <input type="text" name="name" id="name" class="form-control" required placeholder="Enter your full name">
+                    <div class="error-message" id="nameError">Please enter your full name</div>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-envelope me-2"></i>Email Address</label>
+                    <input type="email" name="email" id="email" class="form-control" required placeholder="Enter your email">
+                    <div class="error-message" id="emailError">Please enter a valid email address</div>
+                </div>
+                
+                <div class="row">
+                    <div class="form-group">
+                        <label><i class="fas fa-calendar me-2"></i>Date of Birth</label>
+                        <input type="date" name="dob" id="dob" class="form-control" required max="2018-12-31" min="1950-01-01">
+                        <div class="error-message" id="dobError">Minimum requirement not satisfied</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-lock me-2"></i>Password</label>
+                    <input type="password" name="password" id="password" class="form-control" required placeholder="Create a password">
+                    <div class="strength-bar">
+                        <div class="strength-fill" id="strengthFill"></div>
+                    </div>
+                    <div class="strength-text" id="strengthText"></div>
+                    
+                    <div class="password-requirements">
+                        <p>Password must contain:</p>
+                        <ul>
+                            <li id="lengthReq">At least 8 characters</li>
+                            <li id="upperReq">At least 1 uppercase letter (A-Z)</li>
+                            <li id="lowerReq">At least 1 lowercase letter (a-z)</li>
+                            <li id="numberReq">At least 1 number (0-9)</li>
+                            <li id="specialReq">At least 1 special character (!@#$%^&*)</li>
+                        </ul>
+                    </div>
+                    <div class="success-message" id="passwordSuccess">✓ Password meets all requirements!</div>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-lock me-2"></i>Confirm Password</label>
+                    <input type="password" name="confirm_password" id="confirmPassword" class="form-control" required placeholder="Confirm your password">
+                    <div class="error-message" id="confirmError">Passwords do not match</div>
+                    <div class="success-message" id="confirmSuccess">✓ Passwords match</div>
+                </div>
+                
+                <button type="submit" class="btn btn-signup" id="submitBtn" disabled>
+                    <i class="fas fa-arrow-right me-2"></i>Sign Up
+                </button>
+            </form>
+            
+            <div class="login-link">
+                Already have an account? <a href="/login">Login here</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Password validation function
+        function validatePassword(password) {
+            const requirements = {
+                length: password.length >= 8,
+                upper: /[A-Z]/.test(password),
+                lower: /[a-z]/.test(password),
+                number: /[0-9]/.test(password),
+                special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+            };
+            
+            // Update requirement indicators
+            document.getElementById('lengthReq').className = requirements.length ? 'valid' : 'invalid';
+            document.getElementById('upperReq').className = requirements.upper ? 'valid' : 'invalid';
+            document.getElementById('lowerReq').className = requirements.lower ? 'valid' : 'invalid';
+            document.getElementById('numberReq').className = requirements.number ? 'valid' : 'invalid';
+            document.getElementById('specialReq').className = requirements.special ? 'valid' : 'invalid';
+            
+            // Calculate strength
+            const score = Object.values(requirements).filter(Boolean).length;
+            
+            // Update strength bar
+            const strengthFill = document.getElementById('strengthFill');
+            const strengthText = document.getElementById('strengthText');
+            
+            if (password.length === 0) {
+                strengthFill.className = 'strength-fill';
+                strengthFill.style.width = '0%';
+                strengthText.textContent = '';
+            } else if (score <= 2) {
+                strengthFill.className = 'strength-fill weak';
+                strengthText.textContent = 'Weak password';
+                strengthText.style.color = '#ef4444';
+            } else if (score <= 3) {
+                strengthFill.className = 'strength-fill medium';
+                strengthText.textContent = 'Medium password';
+                strengthText.style.color = '#f59e0b';
+            } else if (score <= 4) {
+                strengthFill.className = 'strength-fill strong';
+                strengthText.textContent = 'Strong password';
+                strengthText.style.color = '#10b981';
+            } else {
+                strengthFill.className = 'strength-fill very-strong';
+                strengthText.textContent = 'Very Strong password!';
+                strengthText.style.color = '#059669';
+            }
+            
+            return requirements.length && requirements.upper && requirements.lower && 
+                   requirements.number && requirements.special;
+        }
+        
+        // Validate date of birth (at least 8 years old)
+        function validateDOB(dob) {
+            if (!dob) return false;
+            const birthDate = new Date(dob);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            
+            return age >= 8;
+        }
+        
+        // Validate email format
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        // Validate name (not empty)
+        function validateName(name) {
+            return name.trim().length > 0;
+        }
+        
+        // Check if form is valid
+        function checkFormValidity() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const dob = document.getElementById('dob').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            const isNameValid = validateName(name);
+            const isEmailValid = validateEmail(email);
+            const isDOBValid = validateDOB(dob);
+            const isPasswordValid = validatePassword(password);
+            const isConfirmValid = password === confirmPassword && password.length > 0;
+            
+            const submitBtn = document.getElementById('submitBtn');
+            if (isNameValid && isEmailValid && isDOBValid && isPasswordValid && isConfirmValid) {
+                submitBtn.disabled = false;
+            } else {
+                submitBtn.disabled = true;
+            }
+        }
+        
+        // Real-time validation listeners
+        document.getElementById('name').addEventListener('input', function() {
+            const isValid = validateName(this.value);
+            const errorDiv = document.getElementById('nameError');
+            if (!isValid && this.value.length > 0) {
+                errorDiv.classList.add('show');
+                this.classList.add('error');
+                this.classList.remove('success');
+            } else if (isValid) {
+                errorDiv.classList.remove('show');
+                this.classList.remove('error');
+                this.classList.add('success');
+            } else {
+                errorDiv.classList.remove('show');
+                this.classList.remove('error', 'success');
+            }
+            checkFormValidity();
+        });
+        
+        document.getElementById('email').addEventListener('input', function() {
+            const isValid = validateEmail(this.value);
+            const errorDiv = document.getElementById('emailError');
+            if (!isValid && this.value.length > 0) {
+                errorDiv.classList.add('show');
+                this.classList.add('error');
+                this.classList.remove('success');
+            } else if (isValid) {
+                errorDiv.classList.remove('show');
+                this.classList.remove('error');
+                this.classList.add('success');
+            } else {
+                errorDiv.classList.remove('show');
+                this.classList.remove('error', 'success');
+            }
+            checkFormValidity();
+        });
+        
+        document.getElementById('dob').addEventListener('change', function() {
+            const isValid = validateDOB(this.value);
+            const errorDiv = document.getElementById('dobError');
+            if (!isValid && this.value) {
+                errorDiv.classList.add('show');
+                this.classList.add('error');
+                this.classList.remove('success');
+            } else if (isValid) {
+                errorDiv.classList.remove('show');
+                this.classList.remove('error');
+                this.classList.add('success');
+            } else {
+                errorDiv.classList.remove('show');
+                this.classList.remove('error', 'success');
+            }
+            checkFormValidity();
+        });
+        
+        document.getElementById('password').addEventListener('input', function() {
+            const isValid = validatePassword(this.value);
+            const successDiv = document.getElementById('passwordSuccess');
+            
+            if (isValid) {
+                successDiv.classList.add('show');
+                this.classList.add('success');
+                this.classList.remove('error');
+            } else {
+                successDiv.classList.remove('show');
+                if (this.value.length > 0) {
+                    this.classList.add('error');
+                    this.classList.remove('success');
+                } else {
+                    this.classList.remove('error', 'success');
+                }
+            }
+            checkFormValidity();
+        });
+        
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const isValid = this.value === password && this.value.length > 0;
+            const errorDiv = document.getElementById('confirmError');
+            const successDiv = document.getElementById('confirmSuccess');
+            
+            if (this.value.length > 0 && !isValid) {
+                errorDiv.classList.add('show');
+                successDiv.classList.remove('show');
+                this.classList.add('error');
+                this.classList.remove('success');
+            } else if (isValid) {
+                errorDiv.classList.remove('show');
+                successDiv.classList.add('show');
+                this.classList.remove('error');
+                this.classList.add('success');
+            } else {
+                errorDiv.classList.remove('show');
+                successDiv.classList.remove('show');
+                this.classList.remove('error', 'success');
+            }
+            checkFormValidity();
+        });
+        
+        // Form submission validation
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const dob = document.getElementById('dob').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (!validateName(name)) {
+                e.preventDefault();
+                alert('Please enter your full name');
+                return false;
+            }
+            
+            if (!validateEmail(email)) {
+                e.preventDefault();
+                alert('Please enter a valid email address');
+                return false;
+            }
+            
+            if (!validateDOB(dob)) {
+                e.preventDefault();
+                alert('Minimum requirement not satisfied');
+                return false;
+            }
+            
+            if (!validatePassword(password)) {
+                e.preventDefault();
+                alert('Password does not meet the requirements.\n\nPassword must contain:\n- At least 8 characters\n- At least 1 uppercase letter\n- At least 1 lowercase letter\n- At least 1 number\n- At least 1 special character (!@#$%^&*)');
+                return false;
+            }
+            
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                alert('Passwords do not match');
+                return false;
+            }
+            
+            return true;
+        });
+    </script>
+</body>
+</html>

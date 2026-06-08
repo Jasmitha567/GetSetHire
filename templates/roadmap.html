@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Learning Roadmap - AI Job Readiness Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: #f5f7fa;
+            padding: 50px 0;
+            color: #1e293b;
+        }
+        
+        .roadmap-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 30px;
+            padding: 40px;
+            margin-bottom: 40px;
+            color: white;
+        }
+        
+        .roadmap-header h1, .roadmap-header p {
+            color: white;
+        }
+        
+        .week-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .week-card:hover {
+            transform: translateX(10px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .week-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .skill-tag {
+            display: inline-block;
+            background: rgba(102,126,234,0.1);
+            border: 1px solid rgba(102,126,234,0.3);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+        
+        .task-item {
+            padding: 8px 0;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .task-item i {
+            color: #10b981;
+            font-size: 14px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .stat-card .text-muted {
+            color: #64748b !important;
+        }
+        
+        .resource-link {
+            display: block;
+            background: #f8fafc;
+            padding: 10px 16px;
+            border-radius: 10px;
+            margin: 5px 0;
+            text-decoration: none;
+            color: #1e293b;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+        }
+        
+        .resource-link:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .strategy-card {
+            background: rgba(102,126,234,0.1);
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 20px;
+            border: 1px solid rgba(102,126,234,0.2);
+            color: #1e293b;
+        }
+        
+        .milestone-badge {
+            display: inline-block;
+            background: rgba(16,185,129,0.1);
+            border: 1px solid #10b981;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-top: 10px;
+            color: #10b981;
+        }
+        
+        .default-resources {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .text-muted {
+            color: #64748b !important;
+        }
+        
+        .resource-section {
+            margin-top: 15px;
+        }
+        
+        .resource-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+        
+        .ai-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            display: inline-block;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        
+        .btn-back {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        
+        .btn-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(99,102,241,0.4);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="roadmap-header text-center">
+            <i class="fas fa-road fa-3x mb-3" style="color: #a855f7;"></i>
+            <h1 class="display-5 fw-bold">
+                Your Personalized Learning Roadmap
+                {% if session.get('ai_generated') %}
+                    <span class="ai-header"><i class="fas fa-robot me-1"></i>AI Generated with Groq</span>
+                {% endif %}
+            </h1>
+            <p class="text-white-50">Follow this structured path to achieve your career goals</p>
+        </div>
+        
+        <div class="row mb-5">
+            <div class="col-md-3 mb-3">
+                <div class="stat-card">
+                    <div class="stat-number">{{ analysis.roadmap.total_weeks }}</div>
+                    <div class="text-muted">Total Weeks</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stat-card">
+                    <div class="stat-number">{{ analysis.roadmap.recommended_hours_per_week }} hrs</div>
+                    <div class="text-muted">Weekly Study</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stat-card">
+                    <div class="stat-number">{{ analysis.roadmap.skills_to_master }}</div>
+                    <div class="text-muted">Skills to Master</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stat-card">
+                    <div class="stat-number">{{ analysis.roadmap.confidence_level }}</div>
+                    <div class="text-muted">Confidence Level</div>
+                </div>
+            </div>
+        </div>
+        
+        {% if analysis.roadmap.study_strategy %}
+        <div class="strategy-card mb-4">
+            <i class="fas fa-lightbulb me-2" style="color: #a855f7;"></i>
+            <strong>Study Strategy:</strong> {{ analysis.roadmap.study_strategy }}
+        </div>
+        {% endif %}
+        
+        <h3 class="mb-4">
+            <i class="fas fa-calendar-alt me-2" style="color: #a855f7;"></i>
+            Weekly Learning Plan ({{ analysis.roadmap.total_weeks }} weeks total)
+        </h3>
+        
+        {% for week in analysis.roadmap.weekly_plan %}
+        <div class="week-card">
+            <div class="week-number">Week {{ week.week }}</div>
+            <div class="mb-3">
+                {% for skill in week.skills %}
+                    <span class="skill-tag">
+                        <i class="fas fa-code me-1"></i>{{ skill }}
+                    </span>
+                {% endfor %}
+            </div>
+            <div>
+                {% for task in week.tasks %}
+                    <div class="task-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>{{ task }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+            {% if week.milestone %}
+            <div class="milestone-badge">
+                <i class="fas fa-flag-checkered me-1"></i>{{ week.milestone }}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+        
+        <h3 class="mb-4 mt-5">
+            <i class="fas fa-graduation-cap me-2" style="color: #a855f7;"></i>
+            Recommended Learning Resources
+        </h3>
+        
+        {% if analysis.roadmap.learning_resources and analysis.roadmap.learning_resources.items() %}
+        <div class="row">
+            {% for skill, resources in analysis.roadmap.learning_resources.items() %}
+            <div class="col-md-6 mb-4">
+                <div class="week-card">
+                    <h5><i class="fas fa-book me-2" style="color: #a855f7;"></i>{{ skill|title }}</h5>
+                    
+                    {% if resources.courses %}
+<div class="resource-section mt-3">
+    <div class="resource-title"><i class="fas fa-graduation-cap me-1"></i>📚 Recommended Courses</div>
+    {% for course in resources.courses %}
+    <a href="#" class="resource-link" 
+       onclick="openCourseLink('{{ course }}', '{{ skill }}'); return false;">
+        {% if course.lower().find('udemy') != -1 %}
+            <i class="fab fa-udemy me-2" style="color: #a435f0;"></i>
+        {% elif course.lower().find('coursera') != -1 %}
+            <i class="fas fa-university me-2" style="color: #0056d2;"></i>
+        {% else %}
+            <i class="fas fa-external-link-alt me-2"></i>
+        {% endif %}
+        {{ course }}
+    </a>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if resources.practice %}
+<div class="resource-section mt-3">
+    <div class="resource-title"><i class="fas fa-code me-1"></i>💪 Practice Resources</div>
+    {% for practice in resources.practice %}
+    <a href="#" class="resource-link" 
+       onclick="openPracticeLink('{{ practice }}', '{{ skill }}'); return false;">
+        {% if practice.lower().find('leetcode') != -1 %}
+            <i class="fab fa-leetcode me-2" style="color: #f89f1b;"></i>
+        {% elif practice.lower().find('hackerrank') != -1 %}
+            <i class="fab fa-hackerrank me-2" style="color: #2ec866;"></i>
+        {% elif practice.lower().find('github') != -1 %}
+            <i class="fab fa-github me-2"></i>
+        {% else %}
+            <i class="fas fa-laptop-code me-2"></i>
+        {% endif %}
+        {{ practice }}
+    </a>
+    {% endfor %}
+</div>
+{% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="default-resources">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <h5><i class="fas fa-video me-2" style="color: #a855f7;"></i>Learning Platforms</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check-circle text-success me-2"></i>Udemy - Comprehensive courses with projects</li>
+                        <li><i class="fas fa-check-circle text-success me-2"></i>Coursera - University-level certifications</li>
+                        <li><i class="fas fa-check-circle text-success me-2"></i>Pluralsight - Tech-focused learning paths</li>
+                        <li><i class="fas fa-check-circle text-success me-2"></i>freeCodeCamp - Free hands-on coding</li>
+                    </ul>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <h5><i class="fas fa-laptop-code me-2" style="color: #a855f7;"></i>Practice Platforms</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check-circle text-success me-2"></i>LeetCode - Coding interview preparation</li>
+                        <li><i class="fas fa-check-circle text-success me-2"></i>HackerRank - Skill-based challenges</li>
+                        <li><i class="fas fa-check-circle text-success me-2"></i>GitHub - Open source contributions</li>
+                        <li><i class="fas fa-check-circle text-success me-2"></i>Personal Projects - Build your portfolio</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <small class="text-muted">For each skill, search for specialized courses on these platforms</small>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="text-center mt-5">
+            <a href="/dashboard" class="btn-back">
+                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+            </a>
+            <a href="/tracking/{{ analysis.id }}" class="btn-back ms-3" style="background: linear-gradient(135deg, #10b981, #059669);">
+                <i class="fas fa-chart-line me-2"></i>Track Your Progress
+            </a>
+        </div>
+    </div>
+    
+<script>
+    function openCourseLink(courseName, skill) {
+        let url = '';
+        const lowerCourse = courseName.toLowerCase();
+        const searchSkill = encodeURIComponent(skill);
+        
+        // Open the correct platform based on course name
+        if (lowerCourse.includes('udemy')) {
+            // Open Udemy search for the skill
+            url = `https://www.udemy.com/courses/search/?q=${searchSkill}`;
+        }
+        else if (lowerCourse.includes('coursera')) {
+            // Open Coursera search for the skill
+            url = `https://www.coursera.org/courses?query=${searchSkill}`;
+        }
+        else if (lowerCourse.includes('pluralsight')) {
+            // Open Pluralsight search
+            url = `https://www.pluralsight.com/search?q=${searchSkill}`;
+        }
+        else if (lowerCourse.includes('edx')) {
+            // Open edX search
+            url = `https://www.edx.org/search?q=${searchSkill}`;
+        }
+        else if (lowerCourse.includes('youtube') || lowerCourse.includes('watch')) {
+            // Open YouTube search
+            url = `https://www.youtube.com/results?search_query=${searchSkill}+tutorial`;
+        }
+        else {
+            // Default to Google search for the specific course
+            url = `https://www.google.com/search?q=${encodeURIComponent(courseName)}`;
+        }
+        
+        window.open(url, '_blank');
+    }
+    
+    function openPracticeLink(practiceName, skill) {
+        let url = '';
+        const searchSkill = encodeURIComponent(skill);
+        const lowerPractice = practiceName.toLowerCase();
+        
+        if (lowerPractice.includes('leetcode')) {
+            // Open LeetCode problems for the skill
+            url = `https://leetcode.com/problemset/all/?search=${searchSkill}`;
+        }
+        else if (lowerPractice.includes('hackerrank')) {
+            // Open HackerRank
+            url = `https://www.hackerrank.com/domains?search=${searchSkill}`;
+        }
+        else if (lowerPractice.includes('github')) {
+            // Open GitHub search for projects
+            url = `https://github.com/search?q=${searchSkill}+project`;
+        }
+        else if (lowerPractice.includes('build') || lowerPractice.includes('project')) {
+            // Open Google search for project ideas
+            url = `https://www.google.com/search?q=${searchSkill}+project+ideas`;
+        }
+        else {
+            // Default to Google search
+            url = `https://www.google.com/search?q=${encodeURIComponent(practiceName)}+${searchSkill}`;
+        }
+        
+        window.open(url, '_blank');
+    }
+    
+    // YouTube video opener for tracking page compatibility
+    function openYouTubeVideo(skill, url) {
+        if (url && url.includes('youtube.com/watch')) {
+            window.open(url, '_blank');
+        } else {
+            const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(skill)}+tutorial+for+beginners`;
+            window.open(searchUrl, '_blank');
+        }
+    }
+</script>
+</body>
+</html>

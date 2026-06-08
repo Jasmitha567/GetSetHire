@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Skills - GetSetHire</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #1e293b;
+            padding: 50px 0;
+        }
+        
+        .sidebar {
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            min-height: 100vh;
+            border-right: 1px solid #e2e8f0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 260px;
+        }
+        
+        .sidebar .nav-link {
+            color: #64748b;
+            padding: 12px 20px;
+            margin: 5px 0;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .main-content {
+            margin-left: 260px;
+            padding: 30px;
+        }
+        
+        .skill-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .skill-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 10px 20px;
+            border-radius: 50px;
+            margin: 8px;
+            transition: all 0.3s ease;
+            color: #1e293b;
+        }
+        
+        .skill-badge:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: #667eea;
+            color: white;
+        }
+        
+        .skill-badge:hover .remove-skill {
+            color: white;
+        }
+        
+        .skill-badge .remove-skill {
+            cursor: pointer;
+            color: #ef4444;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .skill-badge .remove-skill:hover {
+            transform: scale(1.2);
+            color: #dc2626;
+        }
+        
+        .add-skill-form {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .suggested-skills {
+            margin-top: 20px;
+        }
+        
+        .suggested-skill {
+            display: inline-block;
+            background: #f1f5f9;
+            border: 1px dashed #cbd5e1;
+            padding: 8px 16px;
+            border-radius: 50px;
+            margin: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            color: #1e293b;
+        }
+        
+        .suggested-skill:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .btn-gradient {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 50px;
+            transition: all 0.3s;
+        }
+        
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102,126,234,0.4);
+        }
+        
+        .btn-outline-secondary {
+            border-color: #cbd5e1;
+            color: #475569;
+            background: white;
+        }
+        
+        .btn-outline-secondary:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+            color: #1e293b;
+        }
+        
+        .form-control {
+            background: white;
+            border: 1px solid #cbd5e1;
+            color: #1e293b;
+            border-radius: 50px;
+            padding: 12px 20px;
+        }
+        
+        .form-control:focus {
+            background: white;
+            border-color: #667eea;
+            color: #1e293b;
+            box-shadow: 0 0 0 0.2rem rgba(102,126,234,0.25);
+            outline: none;
+        }
+        
+        .form-control::placeholder {
+            color: #94a3b8;
+        }
+        
+        .alert-success {
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+        
+        .alert-danger {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .toast-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .skill-count {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        h2, h4, h5, h6 {
+            color: #1e293b;
+        }
+        
+        .text-muted {
+            color: #64748b !important;
+        }
+        
+        hr {
+            border-color: #e2e8f0;
+        }
+        
+        .small.text-muted {
+            color: #64748b !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar p-3">
+        <div class="text-center mb-4">
+            <i class="fas fa-brain fa-3x mb-2" style="color: #667eea;"></i>
+            <h5 style="color: #1e293b;">GetSetHire</h5>
+            <p class="small text-muted">Welcome!</p>
+        </div>
+        <nav class="nav flex-column">
+            <a class="nav-link" href="/dashboard">
+                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+            </a>
+            <a class="nav-link" href="/upload">
+                <i class="fas fa-upload me-2"></i>Upload Resume
+            </a>
+            <a class="nav-link active" href="/manage-skills">
+                <i class="fas fa-cogs me-2"></i>Manage Skills
+            </a>
+            <a class="nav-link" href="/choose-path">
+                <i class="fas fa-chart-line me-2"></i>Skill Analysis
+            </a>
+            <a class="nav-link" href="/roadmap">
+                <i class="fas fa-road me-2"></i>My Roadmap
+            </a>
+            <a class="nav-link" href="/logout">
+                <i class="fas fa-sign-out-alt me-2"></i>Logout
+            </a>
+        </nav>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="mb-1">Manage Your Skills</h2>
+                    <p class="text-muted">Add or remove skills to improve your analysis accuracy</p>
+                </div>
+                <a href="/dashboard" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="skill-card">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h4 class="mb-0">
+                                <i class="fas fa-list me-2" style="color: #667eea;"></i>
+                                Your Skills
+                            </h4>
+                            <span class="skill-count" id="skillCount">0</span>
+                        </div>
+                        
+                        <div id="skillsList" class="mb-4">
+                            <!-- Skills will be loaded here -->
+                            <div class="text-center text-muted py-5">
+                                <i class="fas fa-spinner fa-spin fa-2x mb-3" style="color: #667eea;"></i>
+                                <p>Loading your skills...</p>
+                            </div>
+                        </div>
+                        
+                        <div class="add-skill-form">
+                            <h5 class="mb-3">
+                                <i class="fas fa-plus-circle me-2" style="color: #10b981;"></i>
+                                Add New Skill
+                            </h5>
+                            <div class="input-group">
+                                <input type="text" id="newSkillInput" class="form-control" placeholder="e.g., React, Python, AWS, Docker..." 
+                                       onkeypress="if(event.key === 'Enter') addSkill()">
+                                <button class="btn btn-gradient" onclick="addSkill()">
+                                    <i class="fas fa-plus me-2"></i>Add Skill
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="suggested-skills">
+                            <h6 class="mb-3 text-muted">
+                                <i class="fas fa-lightbulb me-2" style="color: #f59e0b;"></i>
+                                Suggested Skills (In-demand)
+                            </h6>
+                            <div id="suggestedSkillsList">
+                                <!-- Suggested skills will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="skill-card">
+                        <h5 class="mb-3">
+                            <i class="fas fa-info-circle me-2" style="color: #f59e0b;"></i>
+                            Why Manage Skills?
+                        </h5>
+                        <div style="font-size: 14px; line-height: 1.6; color: #475569;">
+                            <p>✓ <strong>Improve Accuracy</strong> - Add skills that might have been missed by resume parsing</p>
+                            <p>✓ <strong>Remove Irrelevant</strong> - Delete skills that don't match your expertise</p>
+                            <p>✓ <strong>Stay Updated</strong> - Add new skills as you learn them</p>
+                            <p>✓ <strong>Better Analysis</strong> - Your skill gap analysis will reflect your actual skills</p>
+                        </div>
+                        
+                        <hr class="my-3">
+                        
+                        <div class="mt-3">
+                            <small class="text-muted">
+                                <i class="fas fa-sync-alt me-1"></i>
+                                After updating skills, re-run analysis for accurate results
+                            </small>
+                            <div class="mt-3">
+                                <a href="/choose-path" class="btn btn-gradient w-100">
+                                    <i class="fas fa-chart-line me-2"></i>Run New Analysis
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="toastContainer"></div>
+    
+    <script>
+        let currentSkills = [];
+        
+        // Common tech skills suggestions
+        const suggestedSkillsList = [
+            'Python', 'Java', 'JavaScript', 'React', 'Angular', 'Vue.js', 
+            'Node.js', 'Django', 'Flask', 'Spring Boot', 'SQL', 'MongoDB',
+            'PostgreSQL', 'AWS', 'Docker', 'Kubernetes', 'Git', 'CI/CD',
+            'Machine Learning', 'Data Science', 'TensorFlow', 'PyTorch',
+            'HTML5', 'CSS3', 'TypeScript', 'REST APIs', 'GraphQL',
+            'DevOps', 'Agile', 'Scrum', 'Communication', 'Leadership'
+        ];
+        
+        // Load skills on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSkills();
+        });
+        
+        function loadSkills() {
+            fetch('/api/skills')
+                .then(response => response.json())
+                .then(data => {
+                    currentSkills = data.skills || [];
+                    renderSkills();
+                    loadSuggestedSkills();
+                })
+                .catch(error => {
+                    console.error('Error loading skills:', error);
+                    showToast('Failed to load skills', 'error');
+                });
+        }
+        
+        function renderSkills() {
+            const container = document.getElementById('skillsList');
+            const skillCount = document.getElementById('skillCount');
+            
+            skillCount.textContent = currentSkills.length;
+            
+            if (currentSkills.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-inbox fa-3x mb-3" style="color: #cbd5e1;"></i>
+                        <p>No skills added yet</p>
+                        <small>Upload a resume or add skills manually</small>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = currentSkills.map(skill => `
+                <div class="skill-badge" data-skill="${escapeHtml(skill)}">
+                    <i class="fas fa-code"></i>
+                    <span>${escapeHtml(skill)}</span>
+                    <i class="fas fa-times-circle remove-skill" onclick="removeSkill('${escapeHtml(skill)}')"></i>
+                </div>
+            `).join('');
+        }
+        
+        function addSkill() {
+            const input = document.getElementById('newSkillInput');
+            const skill = input.value.trim();
+            
+            if (!skill) {
+                showToast('Please enter a skill name', 'error');
+                return;
+            }
+            
+            // Check if skill already exists
+            if (currentSkills.some(s => s.toLowerCase() === skill.toLowerCase())) {
+                showToast('Skill already exists in your list', 'error');
+                return;
+            }
+            
+            fetch('/api/skills/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ skill: skill })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    currentSkills = data.skills;
+                    renderSkills();
+                    loadSuggestedSkills();
+                    showToast(`✓ "${skill}" added successfully!`, 'success');
+                    input.value = '';
+                } else {
+                    showToast(data.error || 'Failed to add skill', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error adding skill:', error);
+                showToast('Failed to add skill', 'error');
+            });
+        }
+        
+        function removeSkill(skill) {
+            if (confirm(`Remove "${skill}" from your skills?`)) {
+                fetch('/api/skills/remove', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ skill: skill })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        currentSkills = data.skills;
+                        renderSkills();
+                        loadSuggestedSkills();
+                        showToast(`✓ "${skill}" removed`, 'success');
+                    } else {
+                        showToast(data.error || 'Failed to remove skill', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error removing skill:', error);
+                    showToast('Failed to remove skill', 'error');
+                });
+            }
+        }
+        
+        function loadSuggestedSkills() {
+            const container = document.getElementById('suggestedSkillsList');
+            const skillsToShow = suggestedSkillsList.filter(
+                skill => !currentSkills.some(s => s.toLowerCase() === skill.toLowerCase())
+            ).slice(0, 12);
+            
+            container.innerHTML = skillsToShow.map(skill => `
+                <span class="suggested-skill" onclick="addSuggestedSkill('${skill}')">
+                    <i class="fas fa-plus-circle me-1" style="font-size: 12px;"></i>
+                    ${skill}
+                </span>
+            `).join('');
+        }
+        
+        function addSuggestedSkill(skill) {
+            document.getElementById('newSkillInput').value = skill;
+            addSkill();
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast-message alert alert-${type === 'success' ? 'success' : 'danger'}`;
+            toast.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999; animation: fadeIn 0.3s ease;';
+            toast.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+                ${message}
+            `;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

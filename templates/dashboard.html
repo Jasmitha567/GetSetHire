@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - AI Job Readiness Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: #f5f7fa;
+            color: #1e293b;
+        }
+        
+        .sidebar {
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            min-height: 100vh;
+            border-right: 1px solid #e2e8f0;
+        }
+        
+        .sidebar .nav-link {
+            color: #64748b;
+            padding: 12px 20px;
+            margin: 5px 0;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .main-content {
+            padding: 30px;
+        }
+        
+        .welcome-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            color: white;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.3s;
+            height: 100%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .quick-action {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid #e2e8f0;
+            height: 100%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .quick-action:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            transform: translateY(-5px);
+            color: white;
+        }
+        
+        .quick-action:hover i, .quick-action:hover h6, .quick-action:hover small {
+            color: white;
+        }
+        
+        .quick-action i {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .progress {
+            height: 25px;
+            border-radius: 12px;
+            background: #e2e8f0;
+        }
+        
+        .progress-bar {
+            border-radius: 12px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        
+        .table {
+            color: #1e293b;
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .table thead th {
+            background: #f8fafc;
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+            font-weight: 600;
+        }
+        
+        .table tbody tr {
+            border-bottom: 1px solid #e2e8f0;
+            transition: background 0.2s;
+        }
+        
+        .table tbody tr:hover {
+            background: #f1f5f9;
+        }
+        
+        .btn-outline-primary {
+            border-color: #667eea;
+            color: #667eea;
+        }
+        
+        .btn-outline-primary:hover {
+            background: #667eea;
+            border-color: #667eea;
+            color: white;
+        }
+        
+        .btn-outline-success {
+            border-color: #10b981;
+            color: #10b981;
+        }
+        
+        .btn-outline-success:hover {
+            background: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+        
+        .btn-outline-danger {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+        
+        .btn-outline-danger:hover {
+            background: #ef4444;
+            border-color: #ef4444;
+            color: white;
+        }
+        
+        .score-updated {
+            font-size: 0.75rem;
+            color: #10b981;
+            margin-left: 5px;
+        }
+        
+        .original-score {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            text-decoration: line-through;
+            margin-right: 5px;
+        }
+        
+        .alert-info {
+            background: #e0f2fe;
+            border: 1px solid #38bdf8;
+            color: #0369a1;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        #toastContainer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        
+        .toast-message {
+            animation: slideIn 0.3s ease;
+            margin-bottom: 10px;
+        }
+        
+        .matched-badge {
+            background: #10b981;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 px-0">
+                <div class="sidebar p-3">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-brain fa-3x mb-2" style="color: #a855f7;"></i>
+                        <h5>GetSetHire</h5>
+                        <p class="small text-muted">Welcome, {{ user }}!</p>
+                    </div>
+                    <nav class="nav flex-column">
+                        <a class="nav-link active" href="/dashboard">
+                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                        </a>
+                        <a class="nav-link" href="/upload">
+                            <i class="fas fa-upload me-2"></i>Upload Resume
+                        </a>
+                        <a class="nav-link" href="/choose-path">
+                            <i class="fas fa-chart-line me-2"></i>Skill Analysis
+                        </a>
+                        <a class="nav-link" href="/roadmap">
+                            <i class="fas fa-road me-2"></i>My Roadmap
+                        </a>
+                        <a class="nav-link" href="/logout">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </a>
+                    </nav>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                <div class="welcome-card">
+                    <h2>Welcome back, {{ user }}! 👋</h2>
+                    <p class="mb-0">Ready to accelerate your career journey? Let's bridge your skill gap.</p>
+                </div>
+                
+                <!-- Quick Actions -->
+                <h5 class="mb-3">Quick Actions</h5>
+                <div class="row g-4 mb-5">
+                    <div class="col-md-4">
+                        <div class="quick-action" onclick="window.location.href='/upload'">
+                            <i class="fas fa-file-upload"></i>
+                            <h6>Upload Resume</h6>
+                            <small>Get your skills analyzed</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="quick-action" onclick="window.location.href='/choose-path'">
+                            <i class="fas fa-chart-line"></i>
+                            <h6>Skill Analysis</h6>
+                            <small>Find your skill gaps</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="quick-action" onclick="window.location.href='/roadmap'">
+                            <i class="fas fa-road"></i>
+                            <h6>View Roadmap</h6>
+                            <small>Your learning path</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stats -->
+                <h5 class="mb-3">Your Progress</h5>
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6">
+                        <div class="stat-card">
+                            <i class="fas fa-check-circle fa-2x mb-3" style="color: #10b981;"></i>
+                            <h3>{% if analyses %}Analysis Complete{% else %}Ready to Start{% endif %}</h3>
+                            <p class="text-muted">
+                                {% if analyses %}
+                                    You have {{ analyses|length }} career track(s) analyzed
+                                {% else %}
+                                    Upload your resume to begin your skill gap analysis journey
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="/manage-skills" style="text-decoration: none;">
+                            <div class="stat-card" style="cursor: pointer;">
+                                <i class="fas fa-cogs fa-2x mb-3" style="color: #f59e0b;"></i>
+                                <h3>Skills Tracked</h3>
+                                <p class="text-muted">
+                                    {% if skills_count > 0 %}
+                                        {{ skills_count }} skills identified from your resume
+                                        <br><small class="text-primary"><i class="fas fa-edit"></i> Click to manage</small>
+                                    {% else %}
+                                        Upload resume to identify your skills
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Your Career Tracks -->
+                <h5 class="mb-3">Your Career Tracks</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Role</th>
+                                <th>Company</th>
+                                <th>Progress</th>
+                                <th>Score</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for analysis in analyses %}
+                            <tr>
+                                <td>{{ analysis.role }} 
+                                    {% if analysis.matched_skills_count and analysis.matched_skills_count > 0 %}
+                                        <span class="matched-badge">{{ analysis.matched_skills_count }} matched</span>
+                                    {% endif %}
+                                 </td>
+                                <td>{{ analysis.company }}</td>
+                                <td>
+                                    <div class="progress">
+                                        <div class="progress-bar" style="width: {{ analysis.dynamic_score }}%;">
+                                            {{ analysis.dynamic_score }}%
+                                        </div>
+                                    </div>
+                                 </td>
+                                <td>
+                                    {% set dynamic_score = analysis.dynamic_score %}
+                                    {% set original_score = analysis.readiness_score %}
+                                    <div class="d-flex align-items-center">
+                                        <span class="fw-bold">{{ dynamic_score }}%</span>
+                                        {% if dynamic_score > original_score %}
+                                            <span class="score-updated ms-2" title="Score improved by {{ dynamic_score - original_score }}% from completing tasks">
+                                                <i class="fas fa-arrow-up"></i> +{{ dynamic_score - original_score }}%
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                    {% if dynamic_score > original_score %}
+                                        <small class="original-score">Original: {{ original_score }}%</small>
+                                    {% endif %}
+                                 </td>
+                                <td>{{ analysis.created_at[:10] }}</td>
+                                <td>
+                                    <a href="/results/{{ analysis.id }}" class="btn btn-sm btn-outline-primary me-1">View</a>
+                                    <a href="/tracking/{{ analysis.id }}" class="btn btn-sm btn-outline-success me-1">Track</a>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteAnalysis({{ analysis.id }})">
+                                        <i class="fas fa-trash-alt"></i> Delete
+                                    </button>
+                                 </td>
+                             </tr>
+                            {% else %}
+                             <tr>
+                                <td colspan="6" class="text-center text-muted">No analyses yet. Go to <a href="/choose-path" style="color: #667eea;">Skill Analysis</a> to create your first track.</td>
+                             </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Progress Tip -->
+                <div class="alert alert-info mt-4">
+                    <i class="fas fa-lightbulb me-2"></i>
+                    <strong>Pro Tip:</strong> Complete tasks in your tracking page to improve your readiness score in real-time!
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="toastContainer"></div>
+    
+    <script>
+        async function deleteAnalysis(analysisId) {
+            if (!confirm('Are you sure you want to delete this career track? This action cannot be undone.')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/delete-analysis/${analysisId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('Career track deleted successfully!', 'success');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    showToast('Error deleting career track: ' + data.error, 'danger');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Error deleting career track. Please try again.', 'danger');
+            }
+        }
+        
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `alert alert-${type} alert-dismissible fade show toast-message`;
+            toast.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

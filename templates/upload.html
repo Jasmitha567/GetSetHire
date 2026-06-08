@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Resume - AI Job Readiness Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .upload-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .upload-card {
+            background: white;
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            animation: slideUp 0.5s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .upload-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+        
+        .upload-header i {
+            font-size: 70px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+        
+        .upload-header h2 {
+            color: #1e293b;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .upload-header p {
+            color: #64748b;
+        }
+        
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 20px;
+            padding: 50px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+            margin-bottom: 25px;
+        }
+        
+        .upload-area:hover {
+            border-color: #667eea;
+            background: rgba(102,126,234,0.05);
+            transform: translateY(-5px);
+        }
+        
+        .upload-icon {
+            font-size: 70px;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .upload-area h4 {
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+        
+        .upload-area p {
+            color: #64748b;
+            margin-bottom: 0;
+        }
+        
+        .file-info {
+            background: #f1f5f9;
+            border-radius: 15px;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border: 1px solid #cbd5e1;
+            display: none;
+        }
+        
+        .file-info i {
+            color: #10b981;
+            margin-right: 10px;
+        }
+        
+        .file-info span {
+            color: #1e293b;
+        }
+        
+        .btn-upload {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            display: none;
+        }
+        
+        .btn-upload:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102,126,234,0.3);
+        }
+        
+        .supported-formats {
+            text-align: center;
+            margin-top: 25px;
+            color: #64748b;
+            font-size: 12px;
+        }
+        
+        .alert {
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-danger {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+    <div class="upload-container">
+        <div class="upload-card">
+            <div class="upload-header">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h2>Upload Your Resume</h2>
+                <p>Let our AI analyze your skills and guide your career path</p>
+            </div>
+            
+            {% if error %}
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle me-2"></i>{{ error }}
+            </div>
+            {% endif %}
+            
+            <form method="POST" enctype="multipart/form-data" id="uploadForm">
+                <div class="upload-area" onclick="document.getElementById('resume').click()">
+                    <i class="fas fa-file-pdf upload-icon"></i>
+                    <h4>Click to upload your resume</h4>
+                    <p>PDF, DOCX, or TXT files (Max 16MB)</p>
+                    <input type="file" name="resume" id="resume" accept=".pdf,.docx,.txt" style="display: none;" required>
+                </div>
+                
+                <div id="fileInfo" class="file-info">
+                    <i class="fas fa-check-circle"></i>
+                    <span id="fileName"></span>
+                </div>
+                
+                <button type="submit" class="btn-upload" id="submitBtn">
+                    <i class="fas fa-arrow-right me-2"></i>Analyze My Resume
+                </button>
+            </form>
+            
+            <div class="supported-formats">
+                <i class="fas fa-file-pdf"></i> PDF
+                <i class="fas fa-file-word"></i> DOCX
+                <i class="fas fa-file-alt"></i> TXT
+                <br>
+                <small>Your resume is encrypted and securely stored</small>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('resume').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('fileName').textContent = file.name;
+                document.getElementById('fileInfo').style.display = 'block';
+                document.getElementById('submitBtn').style.display = 'block';
+                const uploadArea = document.querySelector('.upload-area');
+                uploadArea.style.borderColor = '#10b981';
+                uploadArea.style.background = 'rgba(16,185,129,0.05)';
+            }
+        });
+    </script>
+</body>
+</html>
